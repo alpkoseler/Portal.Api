@@ -5,17 +5,11 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Portal.Api.Models;
 using Portal.Api.Mappings;
-using Portal.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ✅ Controllers + FluentValidation
-builder.Services.AddControllers()
-    .AddFluentValidation(fv =>
-    {
-        fv.RegisterValidatorsFromAssemblyContaining<UcHarfKelimeValidator>();
-        fv.DisableDataAnnotationsValidation = true;
-    });
+
 
 // ✅ EF Core PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>

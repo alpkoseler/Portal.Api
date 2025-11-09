@@ -15,8 +15,6 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Dil> Dils { get; set; }
-
     public virtual DbSet<Kategori> Kategoris { get; set; }
 
     public virtual DbSet<Kelime> Kelimes { get; set; }
@@ -37,18 +35,6 @@ public partial class AppDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Dil>(entity =>
-        {
-            entity.HasKey(e => e.DilId).HasName("dil_pkey");
-
-            entity.ToTable("dil");
-
-            entity.Property(e => e.DilId)
-                .UseIdentityAlwaysColumn()
-                .HasColumnName("dil_id");
-            entity.Property(e => e.Tanim).HasColumnName("tanim");
-        });
-
         modelBuilder.Entity<Kategori>(entity =>
         {
             entity.HasKey(e => e.KategoriId).HasName("kategori_pkey");
@@ -70,25 +56,27 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.KelimeId)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("kelime_id");
-            entity.Property(e => e.DilId).HasColumnName("dil_id");
             entity.Property(e => e.Tanim).HasColumnName("tanim");
         });
 
         modelBuilder.Entity<KelimeKategori>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("kelime_kategori");
+            entity.HasKey(e => e.KelimeKategoriId).HasName("kelime_kategori_pkey");
 
+            entity.ToTable("kelime_kategori");
+
+            entity.Property(e => e.KelimeKategoriId)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("kelime_kategori_id");
             entity.Property(e => e.KategoriId).HasColumnName("kategori_id");
             entity.Property(e => e.KelimeId).HasColumnName("kelime_id");
 
-            entity.HasOne(d => d.Kategori).WithMany()
+            entity.HasOne(d => d.Kategori).WithMany(p => p.KelimeKategoris)
                 .HasForeignKey(d => d.KategoriId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("kelime_kategori_kategori_id_fkey");
 
-            entity.HasOne(d => d.Kelime).WithMany()
+            entity.HasOne(d => d.Kelime).WithMany(p => p.KelimeKategoris)
                 .HasForeignKey(d => d.KelimeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("kelime_kategori_kelime_id_fkey");

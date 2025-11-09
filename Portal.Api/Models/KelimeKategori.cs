@@ -5,6 +5,8 @@ namespace Portal.Api.Models;
 
 public partial class KelimeKategori
 {
+    public int KelimeKategoriId { get; set; }
+
     public int KelimeId { get; set; }
 
     public int KategoriId { get; set; }

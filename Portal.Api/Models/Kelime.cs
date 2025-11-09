@@ -9,5 +9,5 @@ public partial class Kelime
 
     public string Tanim { get; set; } = null!;
 
-    public int DilId { get; set; }
+    public virtual ICollection<KelimeKategori> KelimeKategoris { get; set; } = new List<KelimeKategori>();
 }

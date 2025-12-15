@@ -38,7 +38,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // ⚠️ Render HTTPS’yi dışarıda yapar
-// app.UseHttpsRedirection();  // istersen kapatabilirsin
+app.UseHttpsRedirection();  // istersen kapatabilirsin
 
 app.UseAuthorization();
 app.MapControllers();

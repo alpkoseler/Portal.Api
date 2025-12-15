@@ -1,22 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Mapster;
+﻿using Mapster;
 using MapsterMapper;
-using Portal.Api.Models;
+using Microsoft.EntityFrameworkCore;
 using Portal.Api.Mappings;
-using Portal.Api.Services.Interfaces;
+using Portal.Api.Models;
 using Portal.Api.Services.Implementations;
+using Portal.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
-
 builder.Services.AddAuthorization();
 
 // EF Core PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Services
 builder.Services.AddScoped<IKelimeService, KelimeService>();
 builder.Services.AddScoped<IKelimeKategoriService, KelimeKategoriService>();
 builder.Services.AddScoped<IKategoriServices, KategoriService>();
@@ -33,14 +33,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// 🔴 ENV KONTROLÜ KALDIRILDI
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// ⚠️ Render HTTPS’yi dışarıda yapar
+// app.UseHttpsRedirection();  // istersen kapatabilirsin
+
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();

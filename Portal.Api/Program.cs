@@ -10,11 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(); // Auth will be added when secured endpoints are introduced
 
 // EF Core PostgreSQL
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Database connection string is not configured.");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Services
 builder.Services.AddScoped<IKelimeService, KelimeService>();
@@ -33,12 +37,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 🔴 ENV KONTROLÜ KALDIRILDI
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Portal API v1");
+});
 
-// ⚠️ Render HTTPS’yi dışarıda yapar
-app.UseHttpsRedirection();  // istersen kapatabilirsin
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.MapControllers();
